@@ -2,34 +2,33 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/server.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node dist/server.js",
     "build": "tsc",
-    "watch": "tsc -w",
-    "dev": "nodemon src/server.ts"
+    "start": "node dist/server.js",
+    "watch": "nodemon dist/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@apollo/server": "^4.0.0",
-    "bcrypt": "^5.0.0",
-    "dotenv": "^16.0.0",
-    "express": "^4.17.1",
-    "graphql": "^16.0.0",
-    "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.0.0"
+    "@apollo/server": "^4.10.4",
+    "bcrypt": "^5.1.1",
+    "express": "^4.19.2",
+    "graphql": "^16.8.2",
+    "graphql-tag": "^2.12.6",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.4.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
-    "@types/express": "^4.17.13",
-    "@types/jsonwebtoken": "^9.0.0",
-    "@types/mongoose": "^5.11.97",
-    "@types/node": "^18.0.0",
-    "nodemon": "^2.0.0",
-    "ts-node": "^10.0.0",
-    "typescript": "^5.0.0"
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^20.12.7",
+    "dotenv": "^16.4.5",
+    "nodemon": "^3.1.0",
+    "typescript": "^5.4.5"
   }
 }
