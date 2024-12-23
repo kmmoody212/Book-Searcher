@@ -1,23 +1,28 @@
 // see SignupForm.js for comments
-import { useState } from "react";
-import type { ChangeEvent, FormEvent } from "react";
-import { Form, Button, Alert } from "react-bootstrap";
-import { LOGIN_USER } from "../utils/mutations";
-import Auth from "../utils/auth";
-import type { User } from "../models/User";
-import { useMutation } from "@apollo/client";
 
-// biome-ignore lint/correctness/noEmptyPattern: <explanation>
+import { useState, useEffect } from 'react';
+import { Form, Button, Alert } from 'react-bootstrap';
+import type { ChangeEvent, FormEvent } from 'react';
+
+import { useMutation } from '@apollo/client';
+import { LOGIN_USER } from '../utils/mutations';
+
+import Auth from '../utils/auth';
+
 const LoginForm = ({}: { handleModalClose: () => void }) => {
-  const [userFormData, setUserFormData] = useState<User>({
-    username: "",
-    email: "",
-    password: "",
-    savedBooks: [],
-  });
+  const [userFormData, setUserFormData] = useState({ email: '', password: '' });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const [loginUser] = useMutation(LOGIN_USER);
+
+  const [login, { error }] = useMutation(LOGIN_USER);
+
+  useEffect(() => {
+    if (error) {
+      setShowAlert(true);
+    } else {
+      setShowAlert(false);
+    }
+  }, [error]);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -27,7 +32,6 @@ const LoginForm = ({}: { handleModalClose: () => void }) => {
   const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // check if form has everything (as per react-bootstrap docs)
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -35,26 +39,19 @@ const LoginForm = ({}: { handleModalClose: () => void }) => {
     }
 
     try {
-      const { data } = await loginUser({
+      const { data } = await login({
         variables: { ...userFormData },
       });
 
-      if (!data) {
-        throw new Error("something went wrong!");
-      }
-
-      const { token } = await data.login;
-      Auth.login(token);
-    } catch (err) {
-      console.error(err);
-      setShowAlert(true);
+      Auth.login(data.login.token);
+    } catch (e) {
+      console.error(e);
     }
 
+    // clear form values
     setUserFormData({
-      username: "",
-      email: "",
-      password: "",
-      savedBooks: [],
+      email: '',
+      password: '',
     });
   };
 
@@ -69,14 +66,14 @@ const LoginForm = ({}: { handleModalClose: () => void }) => {
         >
           Something went wrong with your login credentials!
         </Alert>
-        <Form.Group className="mb-3">
+        <Form.Group className='mb-3'>
           <Form.Label htmlFor="email">Email</Form.Label>
           <Form.Control
             type="text"
             placeholder="Your email"
             name="email"
             onChange={handleInputChange}
-            value={userFormData.email || ""}
+            value={userFormData.email}
             required
           />
           <Form.Control.Feedback type="invalid">
@@ -84,14 +81,14 @@ const LoginForm = ({}: { handleModalClose: () => void }) => {
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group className="mb-3">
+        <Form.Group className='mb-3'>
           <Form.Label htmlFor="password">Password</Form.Label>
           <Form.Control
             type="password"
             placeholder="Your password"
             name="password"
             onChange={handleInputChange}
-            value={userFormData.password || ""}
+            value={userFormData.password}
             required
           />
           <Form.Control.Feedback type="invalid">

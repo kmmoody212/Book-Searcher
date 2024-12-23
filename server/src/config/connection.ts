@@ -1,13 +1,10 @@
-import mongoose from "mongoose";
+import dotenv from 'dotenv';
+dotenv.config();
 
-mongoose
-  .connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/googlebooks")
-  .then(() => {
-    // A check to make sure on my end whether connected to mongodb or not
-    console.log("Connected to MongoDB!");
-  })
-  .catch((error) => {
-    console.error("Error connecting to MongoDB:", error);
-  });
+import mongoose from 'mongoose';
 
-export default mongoose.connection;
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/googlebooks');
+
+const db = mongoose.connection;
+
+export default db;
