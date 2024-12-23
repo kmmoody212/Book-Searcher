@@ -1,20 +1,17 @@
-import * as dotenv from "dotenv";
-dotenv.config();
+import type { Request } from "express";
 import jwt from "jsonwebtoken";
 import { GraphQLError } from "graphql";
-import { Request } from "express";
-import { Types } from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
 
-interface TokenUser {
+interface JwtPayload {
+  _id: unknown;
   username: string;
   email: string;
-  _id: Types.ObjectId | string;
 }
 
-const secret = process.env.JWT_SECRET || "mysecretsshhhhh";
-const expiration = "2h";
-
-export const authMiddleware = async ({ req }: { req: Request }) => {
+export const authenticateToken = ({ req }: { req: Request }) => {
+  // allows token to be sent via req.body, req.query, or headers
   let token = req.body.token || req.query.token || req.headers.authorization;
 
   if (req.headers.authorization) {
@@ -26,23 +23,27 @@ export const authMiddleware = async ({ req }: { req: Request }) => {
   }
 
   try {
-    const { data } = jwt.verify(token, secret) as { data: TokenUser };
-    req.user = data;
-  } catch {
-    console.log("Invalid token");
-    throw new GraphQLError("Invalid token", {
-      extensions: { code: "UNAUTHENTICATED" },
+    const { data }: any = jwt.verify(token, process.env.JWT_SECRET_KEY || "", {
+      maxAge: "2hr",
     });
+    req.user = data as JwtPayload;
+  } catch (err) {
+    console.log("Invalid token");
   }
 
   return req;
 };
 
-export const signToken = (user: TokenUser) => {
-  const payload = {
-    username: user.username,
-    email: user.email,
-    _id: user._id.toString(),
-  };
-  return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
+export const signToken = (username: string, email: string, _id: unknown) => {
+  const payload = { username, email, _id };
+  const secretKey: any = process.env.JWT_SECRET_KEY;
+
+  return jwt.sign({ data: payload }, secretKey, { expiresIn: "2h" });
 };
+
+export class AuthenticationError extends GraphQLError {
+  constructor(message: string) {
+    super(message, undefined, undefined, undefined, ["UNAUTHENTICATED"]);
+    Object.defineProperty(this, "name", { value: "AuthenticationError" });
+  }
+}
