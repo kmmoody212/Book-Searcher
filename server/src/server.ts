@@ -20,6 +20,7 @@ const server = new ApolloServer({
 
 const app = express();
 
+// Create a new instance of an Apollo server with the GraphQL schema
 const startApolloServer = async () => {
   await server.start();
   await db;
@@ -35,7 +36,6 @@ const startApolloServer = async () => {
   );
 
   if (process.env.NODE_ENV === "production") {
-    // Serve static files in production
     app.use(express.static(path.join(__dirname, "../client/dist")));
 
     app.get("*", (_req: Request, res: Response) => {
