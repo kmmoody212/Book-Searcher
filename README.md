@@ -31,7 +31,10 @@ Users will need to:
 3. Build the application with `npm run build` in the command-line.
 4. Deploy the application to a web browser by running `npm run develop` in the command-line.
 Please see this demonstration showing how the app is used once deployed:
-[Video Demonstration](https://drive.google.com/file/d/1pcllW-KgV8IGf-hIalgDaLHc2cbH7biB/view?usp=drive_link)
+[CLICK HERE for Video Demonstration](https://drive.google.com/file/d/1pcllW-KgV8IGf-hIalgDaLHc2cbH7biB/view?usp=drive_link)
+
+![screenshot of application](/assets/Screenshot%202024-12-23%20174032.png)
+
 
 ## License
 
